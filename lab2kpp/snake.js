@@ -29,6 +29,7 @@ class Game {
     for (let i = INITIAL_SNAKE_SIZE; i >= 0; i--) {
       this.snake[INITIAL_SNAKE_SIZE - i] = { x: i, y: 0 }
     }
+    this.headColor ='blue'
     this.dots = []
     this.score = 0
     this.currentDirection = DIRECTION_RIGHT
@@ -77,6 +78,7 @@ class Game {
     var lalala = this.dots.find(dot => this.snake[0].x === dot.x && this.snake[0].y === dot.y)
     if (lalala){
       this.score++
+      this.score % 2 == 0 ? this.headColor = '#' + Math.floor(Math.random()*16777215).toString(16): this.headColor;
       this.dots.splice(this.dots.indexOf(lalala),1)
       this.ui.updateScore(this.score)
       if(this.dots.length == 0){
@@ -106,7 +108,12 @@ class Game {
 
   drawSnake() {
     this.snake.forEach(segment => {
-      this.ui.draw(segment, SNAKE_COLOR)
+      if(segment == this.snake[0])
+      {
+        this.ui.draw(segment, this.headColor) 
+      }else{
+        this.ui.draw(segment, SNAKE_COLOR)
+      }
     })
   }
 
