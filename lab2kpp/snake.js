@@ -29,16 +29,21 @@ class Game {
     for (let i = INITIAL_SNAKE_SIZE; i >= 0; i--) {
       this.snake[INITIAL_SNAKE_SIZE - i] = { x: i, y: 0 }
     }
-
-    this.dot = {}
+    this.dots = []
     this.score = 0
     this.currentDirection = DIRECTION_RIGHT
     this.changingDirection = false
     this.timer = null
-
-    this.generateDot()
+    this.generateDots()
     this.ui.resetScore()
     this.ui.render()
+  }
+
+  generateDots(){
+    for(let i=0; i<3; i++){
+      var dot = this.generateDot()
+      this.dots.push(dot)
+    }
   }
 
   changeDirection(_, key) {
@@ -69,11 +74,14 @@ class Game {
     }
 
     this.snake.unshift(head)
-
-    if (this.snake[0].x === this.dot.x && this.snake[0].y === this.dot.y) {
+    var lalala = this.dots.find(dot => this.snake[0].x === dot.x && this.snake[0].y === dot.y)
+    if (lalala){
       this.score++
+      this.dots.splice(this.dots.indexOf(lalala),1)
       this.ui.updateScore(this.score)
-      this.generateDot()
+      if(this.dots.length == 0){
+        this.generateDots()
+      }
     } else {
       this.snake.pop()
     }
@@ -84,14 +92,16 @@ class Game {
   }
 
   generateDot() {
-    this.dot.x = this.generateRandomPixelCoord(0, this.ui.gameContainer.width - 1)
-    this.dot.y = this.generateRandomPixelCoord(1, this.ui.gameContainer.height - 1)
-
+    var dot = {}
+    dot.x = this.generateRandomPixelCoord(0, this.ui.gameContainer.width - 1),
+    dot.y = this.generateRandomPixelCoord(1, this.ui.gameContainer.height - 1)
+    
     this.snake.forEach(segment => {
-      if (segment.x === this.dot.x && segment.y === this.dot.y) {
+      if (segment.x === dot.x && segment.y === dot.y) {
         this.generateDot()
       }
     })
+    return dot;
   }
 
   drawSnake() {
@@ -101,7 +111,9 @@ class Game {
   }
 
   drawDot() {
-    this.ui.draw(this.dot, DOT_COLOR)
+    this.dots.forEach(dot => {
+      this.ui.draw(dot, DOT_COLOR)
+    })
   }
 
   isGameOver() {
