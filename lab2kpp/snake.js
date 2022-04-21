@@ -1,3 +1,4 @@
+const { default: colors } = require('ansicolors')
 const {
   GAME_SPEED,
   DIRECTIONS,
@@ -29,7 +30,8 @@ class Game {
     for (let i = INITIAL_SNAKE_SIZE; i >= 0; i--) {
       this.snake[INITIAL_SNAKE_SIZE - i] = { x: i, y: 0 }
     }
-    this.headColor ='blue'
+    this.headColor ='green'
+    this.colorsSnake = ['green', 'grey', 'purple', 'white', 'olive', 'navy' ,'aqua', 'teal', 'fuchsia']
     this.dots = []
     this.score = 0
     this.currentDirection = DIRECTION_RIGHT
@@ -75,17 +77,27 @@ class Game {
     }
 
     this.snake.unshift(head)
-    var lalala = this.dots.find(dot => this.snake[0].x === dot.x && this.snake[0].y === dot.y)
-    if (lalala){
+    var eatenDot = this.dots.find(dot => this.snake[0].x === dot.x && this.snake[0].y === dot.y)
+    if (eatenDot){
       this.score++
-      this.score % 2 == 0 ? this.headColor = '#' + Math.floor(Math.random()*16777215).toString(16): this.headColor;
-      this.dots.splice(this.dots.indexOf(lalala),1)
+      this.generateColor(this.score)
+      this.dots.splice(this.dots.indexOf(eatenDot),1)
       this.ui.updateScore(this.score)
       if(this.dots.length == 0){
         this.generateDots()
       }
     } else {
       this.snake.pop()
+    }
+  }
+  generateColor(score){
+    if(score % 2 == 0){
+      var someColor = Math.floor(Math.random()*this.colorsSnake.length);
+      if(this.headColor == someColor){
+        generateColor(score)
+      }else{
+        this.headColor = someColor;
+      }
     }
   }
 
@@ -108,12 +120,8 @@ class Game {
 
   drawSnake() {
     this.snake.forEach(segment => {
-      if(segment == this.snake[0])
-      {
-        this.ui.draw(segment, this.headColor) 
-      }else{
-        this.ui.draw(segment, SNAKE_COLOR)
-      }
+      this.ui.draw(segment, this.headColor) 
+      
     })
   }
 
