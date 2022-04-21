@@ -94,7 +94,7 @@ class Game {
     if(score % 2 == 0){
       var someColor = Math.floor(Math.random()*this.colorsSnake.length);
       if(this.headColor == someColor){
-        generateColor(score)
+        this.generateColor(score)
       }else{
         this.headColor = someColor;
       }
